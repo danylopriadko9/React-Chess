@@ -3,8 +3,8 @@ import { Colors } from './Colors';
 import { Figure } from './figures/Figure';
 
 export class Cell {
-  readonly x: Number;
-  readonly y: Number;
+  readonly x: number;
+  readonly y: number;
   readonly color: Colors;
   figure: Figure | null;
   board: Board;
@@ -14,8 +14,8 @@ export class Cell {
   // создаем ячейку и передаем в нее нужные нам свойства
   constructor(
     board: Board,
-    x: Number,
-    y: Number,
+    x: number,
+    y: number,
     color: Colors,
     figure: Figure | null
   ) {
@@ -26,5 +26,81 @@ export class Cell {
     this.board = board;
     this.available = false;
     this.id = Math.random();
+  }
+
+  isEmptyVertical(target: Cell): boolean {
+    if (this.x !== target.x) {
+      return false;
+    }
+
+    const min = Math.min(this.y, target.y);
+    const max = Math.max(this.y, target.y);
+
+    for (let y = min + 1; y < max; y++) {
+      if (!this.board.getCell(this.x, y).isEmpty()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  setFigure(figure: Figure) {
+    this.figure = figure;
+    this.figure.cell = this;
+  }
+
+  isEmptyHorizontal(target: Cell): boolean {
+    if (this.y !== target.y) {
+      return false;
+    }
+
+    const min = Math.min(this.x, target.x);
+    const max = Math.max(this.x, target.x);
+
+    for (let x = min + 1; x < max; x++) {
+      if (!this.board.getCell(x, this.y).isEmpty()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  isEmptyDiagonal(target: Cell): boolean {
+    const absX = Math.abs(target.x - this.x); // модуль по X
+    const absY = Math.abs(target.y - this.y);
+
+    if (absX !== absY) {
+      return false;
+    }
+
+    const dy = this.y < target.y ? 1 : -1;
+    const dx = this.x < target.x ? 1 : -1;
+
+    for (let i = 1; i < absY; i++) {
+      if (!this.board.getCell(this.x + dx * i, this.y + dy * i).isEmpty()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  isEmpty(): boolean {
+    return this.figure === null;
+  }
+
+  isEnemy(target: Cell): boolean {
+    if (target.figure) {
+      return this.figure?.color !== target.figure.color;
+    }
+
+    return false;
+  }
+
+  moveFigure(target: Cell) {
+    if (this.figure && this.figure?.canMove(target)) {
+      this.figure.moveFigure(target);
+      target.setFigure(this.figure);
+      this.figure = null;
+    }
   }
 }

@@ -3,9 +3,9 @@ import './App.scss';
 import BoardComponent from './components/BoardComponent';
 import { Board } from './models/Board';
 
-function App() {
+const App: React.FC = () => {
   // создаем состояние доски
-  const [board, setBoard] = useState(new Board());
+  const [board, setBoard] = useState<Board>(new Board());
 
   // вызываем инициализацию доски при первом рендере страницы
   useEffect(() => {
@@ -24,6 +24,6 @@ function App() {
       <BoardComponent board={board} setBoard={setBoard} />
     </div>
   );
-}
+};
 
 export default App;

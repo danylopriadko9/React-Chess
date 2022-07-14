@@ -32,6 +32,13 @@ export class Figure {
 
   // проверка может ли фигура переместиться на данное поле
   canMove(target: Cell) {
+    if (target.figure?.color === this.color) {
+      return false;
+    }
+
+    if (target.figure?.name === figureName.KING) {
+      return false;
+    }
     return true;
   }
 

@@ -43,4 +43,15 @@ $white-cell-color: rgb(237, 199, 129);
     height: 48px;
     position: relative;
   }
+
+  &.selected {
+    background-color: brown;
+  }
+
+  .avalible {
+    width: 12px;
+    height: 12px;
+    background-color: rgb(48, 168, 48);
+    border-radius: 50%;
+  }
 }
