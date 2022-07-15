@@ -17,6 +17,32 @@ export class King extends Figure {
       return false;
     }
 
+    const dx: number[] = [0, 1, -1];
+
+    for (let i = 0; i < dx.length; i++) {
+      for (let j = 0; j < dx.length; j++) {
+        if (
+          target.y === this.cell.y + dx[i] &&
+          target.x === this.cell.x + dx[j]
+        ) {
+          return true;
+        }
+      }
+    }
+
+    // if (
+    //   (target.y === this.cell.y ||
+    //     target.y === this.cell.y + 1 ||
+    //     target.y === this.cell.y - 1) &&
+    //   (target.x === this.cell.x ||
+    //     target.x === this.cell.x + 1 ||
+    //     target.x === this.cell.x - 1)
+    // ) {
+    //   return true;
+    // }
+
+    console.log(this.cell.y, this.cell.x);
+
     return false;
   }
 }

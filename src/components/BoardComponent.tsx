@@ -2,14 +2,22 @@ import React, { useEffect, useState } from 'react';
 import '../App.scss';
 import { Board } from '../models/Board';
 import { Cell } from '../models/Cell';
+import { Player } from '../models/Player';
 import CellComponent from './CellComponent';
 
 interface BoardProps {
   board: Board;
   setBoard: (board: Board) => void;
+  currentPlayer: Player | null;
+  setCurrentPlayerFunction: () => void;
 }
 
-const BoardComponent: React.FC<BoardProps> = ({ board, setBoard }) => {
+const BoardComponent: React.FC<BoardProps> = ({
+  board,
+  setBoard,
+  currentPlayer,
+  setCurrentPlayerFunction,
+}) => {
   const [selectedSell, setSelectedSell] = useState<Cell | null>(null);
 
   const onCellClick = (cell: Cell) => {
@@ -20,8 +28,11 @@ const BoardComponent: React.FC<BoardProps> = ({ board, setBoard }) => {
     ) {
       selectedSell.moveFigure(cell);
       setSelectedSell(null);
+      setCurrentPlayerFunction();
     } else {
-      setSelectedSell(cell);
+      if (cell.figure?.color === currentPlayer?.color) {
+        setSelectedSell(cell);
+      }
     }
   };
 
@@ -40,21 +51,24 @@ const BoardComponent: React.FC<BoardProps> = ({ board, setBoard }) => {
   }, [selectedSell]);
 
   return (
-    <div className='board'>
-      {board.cells.map((row, i) => (
-        <React.Fragment key={i}>
-          {row.map((cell) => (
-            <CellComponent
-              click={onCellClick}
-              cell={cell}
-              key={cell.id}
-              selected={
-                cell.x === selectedSell?.x && cell.y === selectedSell?.y
-              }
-            />
-          ))}
-        </React.Fragment>
-      ))}
+    <div>
+      <h3>Current player move: {currentPlayer?.color}</h3>
+      <div className='board'>
+        {board.cells.map((row, i) => (
+          <React.Fragment key={i}>
+            {row.map((cell) => (
+              <CellComponent
+                click={onCellClick}
+                cell={cell}
+                key={cell.id}
+                selected={
+                  cell.x === selectedSell?.x && cell.y === selectedSell?.y
+                }
+              />
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 };

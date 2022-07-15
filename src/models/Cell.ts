@@ -66,7 +66,7 @@ export class Cell {
   }
 
   isEmptyDiagonal(target: Cell): boolean {
-    const absX = Math.abs(target.x - this.x); // модуль по X
+    const absX = Math.abs(target.x - this.x);
     const absY = Math.abs(target.y - this.y);
 
     if (absX !== absY) {
@@ -88,6 +88,10 @@ export class Cell {
     return this.figure === null;
   }
 
+  isEmptyPawnFirstStep(target: Cell): boolean {
+    return this.board.getCell(this.x + 2, this.y).isEmpty();
+  }
+
   isEnemy(target: Cell): boolean {
     if (target.figure) {
       return this.figure?.color !== target.figure.color;
@@ -96,9 +100,18 @@ export class Cell {
     return false;
   }
 
+  addLostFigure(figure: Figure) {
+    figure.color === Colors.BLACK
+      ? this.board.lostBlackFigure.push(figure)
+      : this.board.lostWhiteFigure.push(figure);
+  }
+
   moveFigure(target: Cell) {
     if (this.figure && this.figure?.canMove(target)) {
       this.figure.moveFigure(target);
+      if (target.figure) {
+        this.addLostFigure(target.figure);
+      }
       target.setFigure(this.figure);
       this.figure = null;
     }
